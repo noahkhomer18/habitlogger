@@ -78,7 +78,7 @@ function App() {
       <div className="container">
         <header className="header">
           <h1><i className="fas fa-chart-line"></i> Habit Logger</h1>
-          <p>Track your daily habits and build lasting positive changes</p>
+          <p>Build better habits, one day at a time. Track your progress and stay motivated with our simple, effective habit tracking tool.</p>
         </header>
 
         <div className="main-content">
@@ -104,10 +104,18 @@ function App() {
               <button 
                 className="btn btn-edit" 
                 onClick={resetDay}
-                style={{ marginTop: '20px', width: '100%' }}
+                style={{ 
+                  marginTop: '24px', 
+                  width: '100%', 
+                  padding: '12px 16px',
+                  fontSize: '0.875rem',
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: '1px solid #d1d5db'
+                }}
               >
                 <i className="fas fa-redo"></i>
-                Reset Day
+                Start New Day
               </button>
             )}
           </div>
