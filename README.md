@@ -1,15 +1,19 @@
 # Habit Logger
 
-A simple and effective habit tracking application to help you build and maintain positive habits.
+The Habit Logger is a simple yet powerful tool designed to help users build consistency and reach their goals through daily repetition. It allows users to add custom habits, track progress with daily check-ins, and visualize streaks on a 21-day cycle to reinforce discipline. Each habit is color-coded with green for completion and red for missed days, making progress easy to monitor at a glance. Data is stored in the browser's local storage so habits persist across sessions, while features like editing or resetting habits give flexibility as goals evolve. Optional extras such as motivational quotes, streak celebration animations, and a clean dark mode theme make the experience more engaging and rewarding.
 
 ## Features
 
-- 📝 Track daily habits
-- 📊 View progress over time
-- 🎯 Set habit goals
-- 📈 Visualize your progress with charts
-- 🔔 Reminders and notifications
-- 📱 Simple and intuitive interface
+- 📝 Add and track custom daily habits
+- ✅ Daily check-ins with visual completion indicators
+- 🔥 Streak tracking to build consistency
+- 📊 Real-time statistics and progress visualization
+- 💾 Local storage persistence across sessions
+- ✏️ Edit and delete habits as goals evolve
+- 🔄 Reset day functionality for fresh starts
+- 📱 Responsive design for all devices
+- 🎨 Modern, clean interface with gradient backgrounds
+- 📈 Progress bars and completion rate tracking
 
 ## Getting Started
 
