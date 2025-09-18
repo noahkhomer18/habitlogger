@@ -13,10 +13,10 @@ const HabitSelector = ({ habits, selectedHabit, onHabitSelect, onMarkHabit, onAd
     }
   };
 
-  const canMarkToday = () => {
-    if (!selectedHabit) return false;
+  const getTodayCount = () => {
+    if (!selectedHabit) return 0;
     const today = new Date().toISOString().split('T')[0];
-    return !selectedHabit.completedDates || !selectedHabit.completedDates[today];
+    return selectedHabit.completedDates && selectedHabit.completedDates[today] ? selectedHabit.completedDates[today] : 0;
   };
 
   return (
@@ -43,14 +43,29 @@ const HabitSelector = ({ habits, selectedHabit, onHabitSelect, onMarkHabit, onAd
       </select>
 
       {selectedHabit && (
-        <button 
-          className="mark-habit-btn"
-          onClick={() => onMarkHabit(selectedHabit.id)}
-          disabled={!canMarkToday()}
-        >
-          <i className="fas fa-check"></i>
-          {canMarkToday() ? 'Mark as Complete' : 'Already Completed Today'}
-        </button>
+        <div>
+          <button 
+            className="mark-habit-btn"
+            onClick={() => onMarkHabit(selectedHabit.id)}
+          >
+            <i className="fas fa-check"></i>
+            Mark as Complete
+          </button>
+          {getTodayCount() > 0 && (
+            <div style={{ 
+              marginTop: '8px', 
+              padding: '8px 12px', 
+              background: '#f0f9ff', 
+              border: '1px solid #0ea5e9', 
+              borderRadius: '6px',
+              fontSize: '0.875rem',
+              color: '#0369a1',
+              textAlign: 'center'
+            }}>
+              <i className="fas fa-check-circle"></i> {getTodayCount()} completion{getTodayCount() > 1 ? 's' : ''} today
+            </div>
+          )}
+        </div>
       )}
 
       {!showAddForm ? (

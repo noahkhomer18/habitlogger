@@ -36,11 +36,12 @@ function App() {
     
     setHabits(habits.map(habit => {
       if (habit.id === habitId) {
+        const currentCount = habit.completedDates && habit.completedDates[today] ? habit.completedDates[today] : 0;
         return {
           ...habit,
           completedDates: {
             ...habit.completedDates,
-            [today]: true
+            [today]: currentCount + 1
           }
         };
       }
@@ -52,7 +53,7 @@ function App() {
     if (!selectedHabit) return;
     
     const dateStr = date.toISOString().split('T')[0];
-    const isCompleted = selectedHabit.completedDates && selectedHabit.completedDates[dateStr];
+    const currentCount = selectedHabit.completedDates && selectedHabit.completedDates[dateStr] ? selectedHabit.completedDates[dateStr] : 0;
     
     setHabits(habits.map(habit => {
       if (habit.id === selectedHabit.id) {
@@ -60,7 +61,7 @@ function App() {
           ...habit,
           completedDates: {
             ...habit.completedDates,
-            [dateStr]: !isCompleted
+            [dateStr]: currentCount + 1
           }
         };
       }
@@ -73,6 +74,10 @@ function App() {
     if (!selectedHabit) return {};
     return selectedHabit.completedDates || {};
   };
+
+  // Debug logging
+  console.log('Selected habit:', selectedHabit);
+  console.log('Habit data:', getHabitData());
 
   return (
     <div className="app">

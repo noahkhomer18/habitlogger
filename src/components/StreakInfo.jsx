@@ -19,15 +19,15 @@ const StreakInfo = ({ selectedHabit }) => {
 
   const calculateStreaks = () => {
     if (!selectedHabit.completedDates) {
-      return { currentStreak: 0, longestStreak: 0, totalDays: 0 };
+      return { currentStreak: 0, longestStreak: 0, totalDays: 0, totalCompletions: 0 };
     }
 
     const dates = Object.keys(selectedHabit.completedDates)
-      .filter(date => selectedHabit.completedDates[date])
+      .filter(date => selectedHabit.completedDates[date] > 0)
       .sort();
 
     if (dates.length === 0) {
-      return { currentStreak: 0, longestStreak: 0, totalDays: 0 };
+      return { currentStreak: 0, longestStreak: 0, totalDays: 0, totalCompletions: 0 };
     }
 
     // Calculate current streak
@@ -40,7 +40,7 @@ const StreakInfo = ({ selectedHabit }) => {
       checkDate.setDate(checkDate.getDate() - i);
       const dateStr = checkDate.toISOString().split('T')[0];
       
-      if (selectedHabit.completedDates[dateStr]) {
+      if (selectedHabit.completedDates[dateStr] && selectedHabit.completedDates[dateStr] > 0) {
         currentStreak++;
       } else {
         break;
@@ -67,14 +67,19 @@ const StreakInfo = ({ selectedHabit }) => {
     
     longestStreak = Math.max(longestStreak, tempStreak);
 
+    // Calculate total completions
+    const totalCompletions = Object.values(selectedHabit.completedDates)
+      .reduce((sum, count) => sum + (count || 0), 0);
+
     return {
       currentStreak,
       longestStreak,
-      totalDays: dates.length
+      totalDays: dates.length,
+      totalCompletions
     };
   };
 
-  const { currentStreak, longestStreak, totalDays } = calculateStreaks();
+  const { currentStreak, longestStreak, totalDays, totalCompletions } = calculateStreaks();
 
   return (
     <div className="streak-info">
@@ -99,6 +104,12 @@ const StreakInfo = ({ selectedHabit }) => {
           <span className="streak-label">Total Days</span>
           <span className="streak-value">
             {totalDays} {totalDays === 1 ? 'day' : 'days'}
+          </span>
+        </div>
+        <div className="streak-stat">
+          <span className="streak-label">Total Completions</span>
+          <span className="streak-value">
+            {totalCompletions} {totalCompletions === 1 ? 'time' : 'times'}
           </span>
         </div>
       </div>

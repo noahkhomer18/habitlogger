@@ -58,7 +58,12 @@ const Calendar = ({ habitData, onDayClick, currentDate }) => {
 
   const isCompleted = (date) => {
     const dateStr = date.toISOString().split('T')[0];
-    return habitData[dateStr] || false;
+    return habitData[dateStr] && habitData[dateStr] > 0;
+  };
+
+  const getCompletionCount = (date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return habitData[dateStr] || 0;
   };
 
   const handleDayClick = (date) => {
@@ -113,6 +118,7 @@ const Calendar = ({ habitData, onDayClick, currentDate }) => {
             }
             
             const completed = isCompleted(date);
+            const completionCount = getCompletionCount(date);
             const todayClass = isToday(date) ? 'today' : '';
             const completedClass = completed ? 'completed' : '';
             
@@ -121,7 +127,7 @@ const Calendar = ({ habitData, onDayClick, currentDate }) => {
                 key={`${weekIndex}-${dayIndex}`}
                 className={`calendar-day ${todayClass} ${completedClass}`}
                 onClick={() => handleDayClick(date)}
-                title={`${date.toLocaleDateString()} - ${completed ? 'Completed' : 'Not completed'}`}
+                title={`${date.toLocaleDateString()} - ${completed ? `${completionCount} completion${completionCount > 1 ? 's' : ''}` : 'Not completed'}`}
               />
             );
           })
