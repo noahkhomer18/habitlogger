@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './styles/App.css';
-import AddHabitForm from './components/AddHabitForm';
-import HabitList from './components/HabitList';
-import Stats from './components/Stats';
+import Calendar from './components/Calendar';
+import HabitSelector from './components/HabitSelector';
+import StreakInfo from './components/StreakInfo';
 
 function App() {
   const [habits, setHabits] = useState([]);
-  const [editingHabit, setEditingHabit] = useState(null);
+  const [selectedHabit, setSelectedHabit] = useState(null);
 
   // Load habits from localStorage on component mount
   useEffect(() => {
@@ -25,107 +25,82 @@ function App() {
     const newHabit = {
       id: Date.now(),
       name,
-      completed: false,
-      streak: 0,
+      completedDates: {},
       createdAt: new Date().toISOString()
     };
     setHabits([...habits, newHabit]);
   };
 
-  const toggleHabit = (id) => {
+  const markHabitComplete = (habitId) => {
+    const today = new Date().toISOString().split('T')[0];
+    
     setHabits(habits.map(habit => {
-      if (habit.id === id) {
-        const wasCompleted = habit.completed;
+      if (habit.id === habitId) {
         return {
           ...habit,
-          completed: !habit.completed,
-          streak: !habit.completed ? habit.streak + 1 : Math.max(0, habit.streak - 1)
+          completedDates: {
+            ...habit.completedDates,
+            [today]: true
+          }
         };
       }
       return habit;
     }));
   };
 
-  const editHabit = (id) => {
-    const habit = habits.find(h => h.id === id);
-    if (habit) {
-      const newName = prompt('Edit habit name:', habit.name);
-      if (newName && newName.trim()) {
-        setHabits(habits.map(h => 
-          h.id === id ? { ...h, name: newName.trim() } : h
-        ));
+  const toggleDay = (date) => {
+    if (!selectedHabit) return;
+    
+    const dateStr = date.toISOString().split('T')[0];
+    const isCompleted = selectedHabit.completedDates && selectedHabit.completedDates[dateStr];
+    
+    setHabits(habits.map(habit => {
+      if (habit.id === selectedHabit.id) {
+        return {
+          ...habit,
+          completedDates: {
+            ...habit.completedDates,
+            [dateStr]: !isCompleted
+          }
+        };
       }
-    }
+      return habit;
+    }));
   };
 
-  const deleteHabit = (id) => {
-    if (window.confirm('Are you sure you want to delete this habit?')) {
-      setHabits(habits.filter(habit => habit.id !== id));
-    }
-  };
-
-  const resetDay = () => {
-    if (window.confirm('Reset all habits for a new day?')) {
-      setHabits(habits.map(habit => ({
-        ...habit,
-        completed: false
-      })));
-    }
+  // Get habit data for calendar display
+  const getHabitData = () => {
+    if (!selectedHabit) return {};
+    return selectedHabit.completedDates || {};
   };
 
   return (
     <div className="app">
       <div className="container">
         <header className="header">
-          <h1><i className="fas fa-chart-line"></i> Habit Logger</h1>
-          <p>Build better habits, one day at a time. Track your progress and stay motivated with our simple, effective habit tracking tool.</p>
+          <h1><i className="fas fa-calendar-alt"></i> Habit Logger</h1>
+          <p>Track your habits with a visual calendar. See your progress over time and build lasting streaks.</p>
         </header>
 
         <div className="main-content">
-          <div className="card">
-            <h2>
-              <i className="fas fa-plus-circle"></i>
-              Add New Habit
-            </h2>
-            <AddHabitForm onAddHabit={addHabit} />
-            
-            <h2>
-              <i className="fas fa-list-check"></i>
-              Your Habits
-            </h2>
-            <HabitList 
-              habits={habits}
-              onToggle={toggleHabit}
-              onEdit={editHabit}
-              onDelete={deleteHabit}
+          <div className="calendar-section">
+            <Calendar 
+              habitData={getHabitData()}
+              onDayClick={toggleDay}
+              currentDate={new Date()}
             />
             
-            {habits.length > 0 && (
-              <button 
-                className="btn btn-edit" 
-                onClick={resetDay}
-                style={{ 
-                  marginTop: '24px', 
-                  width: '100%', 
-                  padding: '12px 16px',
-                  fontSize: '0.875rem',
-                  background: '#f3f4f6',
-                  color: '#374151',
-                  border: '1px solid #d1d5db'
-                }}
-              >
-                <i className="fas fa-redo"></i>
-                Start New Day
-              </button>
-            )}
-          </div>
-
-          <div className="card">
-            <h2>
-              <i className="fas fa-chart-bar"></i>
-              Statistics
-            </h2>
-            <Stats habits={habits} />
+            <div className="sidebar">
+              <HabitSelector
+                habits={habits}
+                selectedHabit={selectedHabit}
+                onHabitSelect={setSelectedHabit}
+                onMarkHabit={markHabitComplete}
+                onAddHabit={addHabit}
+              />
+              
+              <StreakInfo selectedHabit={selectedHabit} />
+            </div>
           </div>
         </div>
       </div>
