@@ -13,6 +13,15 @@ function App() {
     const savedHabits = localStorage.getItem('habits');
     if (savedHabits) {
       setHabits(JSON.parse(savedHabits));
+    } else {
+      // Add a sample habit for testing
+      const sampleHabit = {
+        id: Date.now(),
+        name: "Drink Water",
+        completedDates: {},
+        createdAt: new Date().toISOString()
+      };
+      setHabits([sampleHabit]);
     }
   }, []);
 
@@ -37,13 +46,20 @@ function App() {
     setHabits(habits.map(habit => {
       if (habit.id === habitId) {
         const currentCount = habit.completedDates && habit.completedDates[today] ? habit.completedDates[today] : 0;
-        return {
+        const updatedHabit = {
           ...habit,
           completedDates: {
             ...habit.completedDates,
             [today]: currentCount + 1
           }
         };
+        
+        // Update selectedHabit if it's the one being updated
+        if (selectedHabit && selectedHabit.id === habitId) {
+          setSelectedHabit(updatedHabit);
+        }
+        
+        return updatedHabit;
       }
       return habit;
     }));
@@ -57,13 +73,20 @@ function App() {
     
     setHabits(habits.map(habit => {
       if (habit.id === selectedHabit.id) {
-        return {
+        const updatedHabit = {
           ...habit,
           completedDates: {
             ...habit.completedDates,
             [dateStr]: currentCount + 1
           }
         };
+        
+        // Update selectedHabit if it's the one being updated
+        if (selectedHabit && selectedHabit.id === habit.id) {
+          setSelectedHabit(updatedHabit);
+        }
+        
+        return updatedHabit;
       }
       return habit;
     }));
@@ -75,9 +98,6 @@ function App() {
     return selectedHabit.completedDates || {};
   };
 
-  // Debug logging
-  console.log('Selected habit:', selectedHabit);
-  console.log('Habit data:', getHabitData());
 
   return (
     <div className="app">
@@ -85,6 +105,19 @@ function App() {
         <header className="header">
           <h1><i className="fas fa-calendar-alt"></i> Habit Logger</h1>
           <p>Track your habits with a visual calendar. See your progress over time and build lasting streaks.</p>
+          {habits.length === 0 && (
+            <div style={{ 
+              marginTop: '20px', 
+              padding: '16px', 
+              background: '#fef3c7', 
+              border: '1px solid #fbbf24', 
+              borderRadius: '8px',
+              color: '#92400e',
+              fontSize: '0.875rem'
+            }}>
+              <i className="fas fa-info-circle"></i> Start by adding your first habit in the sidebar!
+            </div>
+          )}
         </header>
 
         <div className="main-content">

@@ -30,8 +30,9 @@ const HabitSelector = ({ habits, selectedHabit, onHabitSelect, onMarkHabit, onAd
         className="habit-dropdown"
         value={selectedHabit ? selectedHabit.id : ''}
         onChange={(e) => {
-          const habit = habits.find(h => h.id === parseInt(e.target.value));
-          onHabitSelect(habit);
+          const habitId = parseInt(e.target.value);
+          const habit = habits.find(h => h.id === habitId);
+          onHabitSelect(habit || null);
         }}
       >
         <option value="">Select a habit to track</option>

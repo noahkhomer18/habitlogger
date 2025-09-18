@@ -67,6 +67,7 @@ const Calendar = ({ habitData, onDayClick, currentDate }) => {
   };
 
   const handleDayClick = (date) => {
+    // Allow clicking on today and past days
     if (date <= today) {
       onDayClick(date);
     }
@@ -78,6 +79,16 @@ const Calendar = ({ habitData, onDayClick, currentDate }) => {
         <h2 className="calendar-title">
           <i className="fas fa-calendar-alt"></i>
           Habit Calendar
+          {habitData && Object.keys(habitData).length > 0 && (
+            <span style={{ 
+              fontSize: '0.875rem', 
+              fontWeight: '400', 
+              color: '#6b7280',
+              marginLeft: '8px'
+            }}>
+              (Click days to mark complete)
+            </span>
+          )}
         </h2>
         <div className="calendar-nav">
           <button>
